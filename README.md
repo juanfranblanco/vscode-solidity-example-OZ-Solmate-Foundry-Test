@@ -30,6 +30,41 @@ Then the remappings.txt file has been configured to add the mapping as follows:
 
 The file can be found here https://github.com/juanfranblanco/vscode-solidity-example-OZ-Solmate-Foundry-Test/blob/master/remappings.txt
 
+This enables to resolve the following paths for OpenZeppelin:
+
+```solidity
+// SPDX-License-Identifier: MIT 
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Votes.sol";
+
+contract OZErc721 is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausable, Ownable, ERC721Burnable, EIP712, ERC721Votes {
+    uint256 private _nextTokenId;
+
+    constructor(address initialOwner)
+        ERC721("MyErc721", "MTK")
+        Ownable(initialOwner)
+        EIP712("MyErc721", "1")
+    {}
+
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
+```
+
+
 ## Adding Solmate
 To add solmate just install it the same way as open zeppelin, this example follows some of the examples included here https://book.getfoundry.sh/tutorials/solmate-nft
 
@@ -52,5 +87,36 @@ corresponds to :
 ```
 
 I have included here not just 'src' but other folders so they can be resolved like none '' and 'contracts' that are also common.
+
+
+The following contract can resolve the paths now for solmate ```import "solmate/tokens/ERC721.sol";```
+and for Open Zeppelin (different from the one before in remappings) as it uses the path "openzeppelin-contracts/contracts", that corresponds to "lib/openzeppelin-contracts/contracts/" automatically resolved both by Foundry and vscode-solidty.
+
+```solidity
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.20;
+
+import "solmate/tokens/ERC721.sol";
+import "openzeppelin-contracts/contracts/utils/Strings.sol";
+
+contract SolErc721 is ERC721 {
+    uint256 public currentTokenId;
+
+    constructor(
+        string memory _name,
+        string memory _symbol
+    ) ERC721(_name, _symbol) {}
+
+    function mintTo(address recipient) public payable returns (uint256) {
+        uint256 newItemId = ++currentTokenId;
+        _safeMint(recipient, newItemId);
+        return newItemId;
+    }
+
+    function tokenURI(uint256 id) public view virtual override returns (string memory) {
+        return Strings.toString(id);
+    }
+}
+```
 
 
