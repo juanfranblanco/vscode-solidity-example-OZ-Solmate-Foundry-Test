@@ -1,66 +1,56 @@
-## Foundry
+## Vscode Solidity Example using Foundry / Forge tests with Open Zeppelin and Solmate.
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+This project provides an example of an environment / configuration to work with Foundry and the Visual Studio Code Solidity extension.
 
-Foundry consists of:
+It is assumed that you have already installed foundry and initialise the project as per the first steps: https://book.getfoundry.sh/getting-started/first-steps ```forge init hello_foundry``.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Vscode solidity configuration
+The project has been configured using a specfic version of solidty and contracts directory (more on this to follow), you can simply change the solidity version by right clicking on a solidity file and change the remote version, this defaults to the latest.
+```json
+{
+    "solidity.compileUsingRemoteVersion": "v0.8.20+commit.a1b79de6",
+    "solidity.packageDefaultDependenciesContractsDirectory": "['src', '', 'contracts']"
+}
+```
+Vscode solidity defaults to mono-repo support, allowing to work with different projects at the same time.
 
-## Documentation
+The file can be found here: https://github.com/juanfranblanco/vscode-solidity-example-OZ-Solmate-Foundry-Test/blob/master/.vscode/settings.json
 
-https://book.getfoundry.sh/
+## Adding Open Zeppelin
+To add open zeppelin, in this example it has been added using the "git" version. 
 
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```bash
+forge install OpenZeppelin/openzeppelin-contracts
 ```
 
-### Test
-
-```shell
-$ forge test
+Then the remappings.txt file has been configured to add the mapping as follows:
+```
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
 ```
 
-### Format
+The file can be found here https://github.com/juanfranblanco/vscode-solidity-example-OZ-Solmate-Foundry-Test/blob/master/remappings.txt
 
-```shell
-$ forge fmt
+## Adding Solmate
+To add solmate just install it the same way as open zeppelin, this example follows some of the examples included here https://book.getfoundry.sh/tutorials/solmate-nft
+
+```bash
+forge install transmissions11/solmate
 ```
 
-### Gas Snapshots
+Foundry contract path resolution is the same as the old Dapple so paths can be resolved using the the library name and the contract folders, for example:
 
-```shell
-$ forge snapshot
+```import "solmate/tokens/ERC721.sol"; ```
+
+corresponds to :
+
+```import "lib/solmate/src/tokens/ERC721.sol"; ```
+
+"lib" and "node_modules" are already a default path in vscode-solidity, so these are resolved automatically, but to resolve ```src``` as a subfolder contracts path we add the following setting:
+
+```
+ "solidity.packageDefaultDependenciesContractsDirectory": "['src', '', 'contracts']"
 ```
 
-### Anvil
+I have included here not just 'src' but other folders so they can be resolved like none '' and 'contracts' that are also common.
 
-```shell
-$ anvil
-```
 
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
