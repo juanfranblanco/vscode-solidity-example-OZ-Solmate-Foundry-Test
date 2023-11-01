@@ -2,7 +2,7 @@
 
 This project provides an example of an environment / configuration to work with Foundry and the Visual Studio Code Solidity extension.
 
-It is assumed that you have already installed foundry and initialise the project as per the first steps: https://book.getfoundry.sh/getting-started/first-steps ```forge init hello_foundry``.
+It is assumed that you have already installed foundry and initialise the project as per the first steps: https://book.getfoundry.sh/getting-started/first-steps ```forge init hello_foundry```.
 
 ## Vscode solidity configuration
 The project has been configured using a specfic version of solidty and contracts directory (more on this to follow), you can simply change the solidity version by right clicking on a solidity file and change the remote version, this defaults to the latest.
